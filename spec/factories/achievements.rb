@@ -1,9 +1,14 @@
 FactoryGirl.define do
   factory :achievement do
-    title "MyString"
-    description "MyText"
-    privacy 1
+    sequence(:title) {|n| "Achievement title #{n}"}
+    description "Description"
+    privacy Achievement.privacies[:private_achievement]
     featured false
-    cover_image "MyString"
+    cover_image "cover_image.jpg"
+  end
+
+  factory :public_achievement do
+  	privacy Achievement.privacies[:public_achievement]
   end
 end
+
