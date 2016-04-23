@@ -2,6 +2,7 @@ class Achievement < ActiveRecord::Base
 	belongs_to :user
 
   validates :title, presence: true
+  validates :user, presence: true
   validate :unique_title_for_one_user
   # validates :title, uniqueness: true
 
