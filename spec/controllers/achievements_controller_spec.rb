@@ -1,6 +1,66 @@
 require 'rails_helper'
 
 describe AchievementsController do
+	describe 'guest user' do
+		describe 'GET :index' do
+			it 'render :index template' do
+				get :index
+				expect(response).to render_template(:index)
+			end
+
+			it 'assigns only public achievements' do
+				public_achievement = FactoryGirl.create(:public_achievement)
+				private_achievement = FactoryGirl.create(:private_achievement)
+				get :index
+				expect(assigns(:achievements)).to match_array([public_achievement])
+			end
+		end
+
+		describe 'GET :show' do
+			let(:achievement) { FactoryGirl.create(:achievement)}
+			
+			it 'renders :show template' do
+				get :show, id: achievement.id
+				expect(response).to render_template(:show)
+			end
+		end
+
+		describe 'GET :edit' do
+			let(:achievement){FactoryGirl.create(:public_achievement)}
+			
+			it 'redirects to login' do
+				get :edit, id: achievement
+				expect(response).to redirect_to(new_user_session_url)
+			end
+		end
+
+		describe 'PUT :update' do
+			let(:achievement){ FactoryGirl.create(:public_achievement)}
+			let(:attributes){ FactoryGirl.attributes_for(:public_achievement)}
+
+			it 'redirects to login' do
+				put :update, id: achievement, achievement: attributes
+				expect(response).to redirect_to(new_user_session_url)
+			end
+		end
+
+		describe 'DELETE :destroy' do
+			let(:achievement){FactoryGirl.create(:public_achievement)}
+			it 'redirects to login' do
+				delete :destroy, id: achievement
+				expect(response).to redirect_to(new_user_session_url)
+			end	
+		end
+
+		describe 'GET :new' do
+			it 'redirects to login' do
+				get :new
+				expect(response).to redirect_to(new_user_session_url)
+			end
+		end
+
+	end
+
 	describe 'GET :index' do
 		it 'render :index template' do
 			get :index
@@ -12,6 +72,19 @@ describe AchievementsController do
 			private_achievement = FactoryGirl.create(:private_achievement)
 			get :index
 			expect(assigns(:achievements)).to match_array([public_achievement])
+		end
+	end
+
+	describe 'GET :show' do
+		let(:achievement) { FactoryGirl.create(:achievement)}
+		
+		it 'renders :show template' do
+			get :show, id: achievement.id
+			expect(response).to render_template(:show)
+		end
+		it 'assigns Achievement to form' do
+			get :show, id: achievement.id
+			expect(assigns(:achievement)).to eq(achievement)
 		end
 	end
 
@@ -80,19 +153,6 @@ describe AchievementsController do
 		it 'assigns new Achievement to form' do
 			get :new
 			expect(assigns(:achievement)).to be_a_new(Achievement)
-		end
-	end
-
-	describe 'GET :show' do
-		let(:achievement) { FactoryGirl.create(:achievement)}
-		
-		it 'renders :show template' do
-			get :show, id: achievement.id
-			expect(response).to render_template(:show)
-		end
-		it 'assigns Achievement to form' do
-			get :show, id: achievement.id
-			expect(assigns(:achievement)).to eq(achievement)
 		end
 	end
 
