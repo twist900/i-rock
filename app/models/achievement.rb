@@ -1,5 +1,7 @@
 class Achievement < ActiveRecord::Base
-	validates :title, presence: true
+	belongs_to :user
+
+  validates :title, presence: true
 
 	enum privacy: [:public_access, :private_access, :friend_access]
 end
